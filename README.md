@@ -9,11 +9,25 @@ A Java RESTful API for money transfers between accounts
 - POSTMAN Chrome Extension
 
 ### How to run
+At root directory location of project where build.sbt file is avaialble, execute below command:
+
 ```sh
-sbt run
+sbt
+```
+Now once sbt command prompt appears. Execute below command to run h2 db on the browser:
+
+```sh
+h2-browser
+```
+On h2 browser make connection from details given in conf/db.properties file. And hit SQL scripts given at scripts/V1_db_script.sql tog enerate table and data.
+
+Once table is created and data is restored, execute below command to run PLAY application server:
+
+```sh
+run
 ```
 
-Application starts an internal PLAY framework's Netty server on localhost port 9000. An H2 in memory database is used to do trasaction and store records.
+Application starts an internal PLAY framework's Netty server on localhost default port 9000.
 
 ### REST API Services & JSON
 
