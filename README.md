@@ -3,10 +3,11 @@
 A Java RESTful API based application to deposit, withdraw and transfer money between accounts.
 
 ### Technologies
+- Java
 - PLAY Framework
 - H2 in memory database
 - Log4j
-- POSTMAN Chrome Extension
+- POSTMAN REST Client Chrome Extension
 
 ### How to run
 At root directory location of project where build.sbt file is avaialble, execute below command:
@@ -31,6 +32,8 @@ Application starts an internal PLAY framework's Netty server on localhost defaul
 
 ### REST API Services & JSON
 
+Hit below APIs on POSTMAN REST Client given at chrome browser:
+
 - GET account details request
 
 http://localhost:9000/accounts/101
@@ -38,6 +41,8 @@ http://localhost:9000/accounts/101
 - Deposit POST Request
 
 http://localhost:9000/accounts/deposit
+
+Content-Type: application/json
 
 ##### RequestJson:
 ```sh
