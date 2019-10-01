@@ -1,6 +1,6 @@
-# Money Transfer
+# Money Transfer between Accounts
 
-A Java RESTful API for money transfers between accounts.
+A Java RESTful API based application to deposit, withdraw and transfer money between accounts.
 
 ### Technologies
 - PLAY Framework
