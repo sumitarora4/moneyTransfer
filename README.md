@@ -13,7 +13,7 @@ A Java RESTful API for money transfers between accounts
 sbt run
 ```
 
-Application starts an internal PLAY framework's Netty server on localhost port 9000. An c To view.
+Application starts an internal PLAY framework's Netty server on localhost port 9000. An H2 in memory database is used to do trasaction and store records.
 
 ### REST API Services & JSON
 
