@@ -1,39 +1,65 @@
-// create script for account table
-CREATE TABLE account ( 
-   account_id LONG NOT NULL, 
-   user_name VARCHAR(50) NOT NULL, 
-   balance DECIMAL(20,2),     
-);
+# Money Transfer
 
-// insert table script
-insert into account values(101,'Sumit', 200.20);
-insert into account values(102,'Nayan', 500.50);
-insert into account values(103,'Chandan', 800.90);
+A Java RESTful API for money transfers between accounts
 
-// GET account details request
-localhost:9000/accounts/101
+### Technologies
+- PLAY Framework
+- H2 in memory database
+- Log4j
+- POSTMAN Chrome Extension
 
-// deposit POST Request
-localhost:9000/accounts/deposit
-Json: 
+### How to run
+```sh
+sbt run
+```
+
+Application starts an internal PLAY framework's Netty server on localhost port 9000. An c To view.
+
+### REST API Services & JSON
+
+- GET account details request
+
+http://localhost:9000/accounts/101
+
+- Deposit POST Request
+
+http://localhost:9000/accounts/deposit
+
+##### RequestJson:
+```sh
 {
  "accountId": 101,
  "balance": 500.9
 }
+```
 
-// withdraw POST Request
-localhost:9000/accounts/withdraw
-Json:
+- Withdraw POST Request
+
+http://localhost:9000/accounts/withdraw
+
+##### RequestJson:
+```sh
 {
  "accountId": 102,
  "balance": 400
 }
+```
 
-// transfer amount POST request
-localhost:9000/accounts/transferAmount
-Json:
+- Transfer Amount POST request
+
+http://localhost:9000/accounts/transferAmount
+
+##### RequestJson:
+```sh
 {
  "fromAccountId": 101,
  "toAccountId": 102,  
  "amount": 100.00
 }
+```
+
+### Http Status
+- 200 OK: The request has succeeded
+- 400 Bad Request: The request could not be understood by the server 
+- 404 Not Found: The requested resource cannot be found
+- 500 Internal Server Error: The server encountered an unexpected condition 
