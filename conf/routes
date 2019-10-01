@@ -5,7 +5,9 @@
 # An example controller showing a sample home page
 GET     /                           controllers.HomeController.index
 GET     /accounts/:id               controllers.AccountController.getAccount(id: Long)
-POST    /accounts/deposit/			controllers.AccountController.deposit(data: String)
+POST    /accounts/deposit			controllers.AccountController.deposit(request: Request)
+POST    /accounts/withdraw			controllers.AccountController.withdraw(request: Request)
+POST    /accounts/transferAmount	controllers.AccountController.transferAmount(request: Request)
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.versioned(path="/public", file: Asset)

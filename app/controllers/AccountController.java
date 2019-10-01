@@ -10,6 +10,7 @@ import javax.inject.Inject;
 import com.fasterxml.jackson.databind.JsonNode;
 
 import model.Account;
+import model.Transaction;
 import play.libs.Json;
 import play.libs.concurrent.HttpExecutionContext;
 import play.mvc.Controller;
@@ -38,35 +39,17 @@ public class AccountController extends Controller {
             return ok(jsonObjects);
         }).orElse(notFound("Account with id:" + accountId + " not found"));
         }, ec.current());
-				
-				
+							
 	}
-	
-	/* public CompletionStage<Result> deposit(Http.Request request){
-		JsonNode reqJson = request.body().asJson();
-		
-		return supplyAsync(()  -> {
-			if (reqJson == null) {
-				return badRequest(ResponseUtility.createResponse("Json is not correct",false));
-			} 
-		
-		Optional<Account> accountData = accountService.deposit(Json.fromJson(reqJson, Account.class));
-		
-		return accountData.map(row -> {
-//			if (row == null) {
-//                return notFound(ResponseUtility.createResponse("Account Id not found",false));
-//            }
-			
-            JsonNode jsonObjects = Json.toJson(row);
-            return ok( ResponseUtility.createResponse(jsonObjects,true));
-        }).orElse(internalServerError(ResponseUtility.createResponse("Could not deposit amount",false));
-        }, ec.current());
-				
-				
-	} */
+	 
 	
 	public CompletionStage<Result> deposit(Http.Request request) {
         JsonNode json = request.body().asJson();
+        System.out.println("json="+json);
+        
+        Account actObj = Json.fromJson(json, Account.class);
+        System.out.println("actObj.getAccountId="+actObj.getAccountId());
+        
         return supplyAsync(() -> {
             if (json == null) {
                 return badRequest(ResponseUtility.createResponse("Expecting Json data", false));
@@ -79,6 +62,50 @@ public class AccountController extends Controller {
                 JsonNode jsonObject = Json.toJson(row);
                 return ok(ResponseUtility.createResponse(jsonObject, true));
             }).orElse(internalServerError(ResponseUtility.createResponse("Could not deposit amount.", false)));
+        }, ec.current());
+    }
+	
+	public CompletionStage<Result> withdraw(Http.Request request) {
+        JsonNode json = request.body().asJson();
+        System.out.println("json="+json);
+        
+        Account actObj = Json.fromJson(json, Account.class);
+        System.out.println("actObj.getAccountId="+actObj.getAccountId());
+        
+        return supplyAsync(() -> {
+            if (json == null) {
+                return badRequest(ResponseUtility.createResponse("Expecting Json data", false));
+            }
+            Optional<Account> accountData = accountService.withdraw(Json.fromJson(json, Account.class));
+            return accountData.map(row -> {
+                if (row == null) {
+                    return notFound(ResponseUtility.createResponse("Record not found", false));
+                }
+                JsonNode jsonObject = Json.toJson(row);
+                return ok(ResponseUtility.createResponse(jsonObject, true));
+            }).orElse(internalServerError(ResponseUtility.createResponse("Could not withdraw amount.", false)));
+        }, ec.current());
+    }
+	
+	public CompletionStage<Result> transferAmount(Http.Request request) {
+        JsonNode json = request.body().asJson();
+        System.out.println("json="+json);
+        
+        Account actObj = Json.fromJson(json, Account.class);
+        System.out.println("actObj.getAccountId="+actObj.getAccountId());
+        
+        return supplyAsync(() -> {
+            if (json == null) {
+                return badRequest(ResponseUtility.createResponse("Expecting Json data", false));
+            }
+            Optional<Account> accountData = accountService.transferAmount(Json.fromJson(json, Transaction.class));
+            return accountData.map(row -> {
+                if (row == null) {
+                    return notFound(ResponseUtility.createResponse("Record not found", false));
+                }
+                JsonNode jsonObject = Json.toJson(row);
+                return ok(ResponseUtility.createResponse(jsonObject, true));
+            }).orElse(internalServerError(ResponseUtility.createResponse("Could not transfer amount.", false)));
         }, ec.current());
     }
 
