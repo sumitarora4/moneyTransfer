@@ -1,6 +1,6 @@
 # Money Transfer
 
-A Java RESTful API for money transfers between accounts
+A Java RESTful API for money transfers between accounts.
 
 ### Technologies
 - PLAY Framework
@@ -19,7 +19,7 @@ Now once sbt command prompt appears. Execute below command to run h2 db on the b
 ```sh
 h2-browser
 ```
-On h2 browser make connection from details given in conf/db.properties file. And hit SQL scripts given at scripts/V1_db_script.sql tog enerate table and data.
+On h2 browser make connection from details given in conf/db.properties file. And hit SQL scripts given at scripts/V1_db_script.sql to generate table and data.
 
 Once table is created and data is restored, execute below command to run PLAY application server:
 
