@@ -1,3 +1,5 @@
+DROP TABLE IF EXISTS account;
+
 CREATE TABLE account ( 
    account_id LONG NOT NULL primary key, 
    user_name VARCHAR(50) NOT NULL, 

@@ -10,6 +10,7 @@ import java.util.Properties;
 
 import org.apache.commons.dbutils.DbUtils;
 import org.apache.log4j.Logger;
+import org.h2.tools.RunScript;
 
 
 public class H2DbConnection { 
@@ -55,5 +56,23 @@ public class H2DbConnection {
 	public static Connection getConnection() throws SQLException {
 		return DriverManager.getConnection(h2_connection_url, h2_user, h2_password);
 
+	}
+	
+	
+	public static void populateTestData() {
+		log.info("Populating Test User Table and data ..... ");
+		Connection conn = null;
+		try {
+			conn = H2DbConnection.getConnection();
+			RunScript.execute(conn, new FileReader("scripts/V1_db_script.sql"));
+		} catch (SQLException e) {
+			log.error("populateTestData(): Error populating user data: ", e);
+			throw new RuntimeException(e);
+		} catch (FileNotFoundException e) {
+			log.error("populateTestData(): Error finding test script file ", e);
+			throw new RuntimeException(e);
+		} finally {
+			DbUtils.closeQuietly(conn);
+		}
 	}
 }

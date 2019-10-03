@@ -18,6 +18,8 @@ public class AccountDaoImpl implements AccountDao{
 	private final static String q1 = "SELECT * FROM Account WHERE account_id = ? ";	
 	private final static String q2 = "SELECT * FROM Account WHERE account_id = ? FOR UPDATE";
 	private final static String q3 = "UPDATE Account SET Balance = ? WHERE account_id = ? ";
+	
+	
  
 
 	@Override
@@ -28,6 +30,7 @@ public class AccountDaoImpl implements AccountDao{
 		Account acc = null;
 		try {
 			conn = H2DbConnection.getConnection();
+//			H2DbConnection.populateTestData();
 			stmt = conn.prepareStatement(q1);
 			stmt.setLong(1, accountId);
 			rs = stmt.executeQuery();
