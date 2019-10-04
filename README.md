@@ -39,6 +39,14 @@ Hit below APIs on POSTMAN REST Client given at chrome browser:
 
 http://localhost:9000/accounts/101
 
+##### ResponseJson:
+````sh
+{
+    "accountId": 101,
+    "userName": "Sumit",
+    "balance": 1503.7
+}
+```
 - Deposit POST Request
 
 http://localhost:9000/accounts/deposit
@@ -49,7 +57,19 @@ Content-Type: application/json
 ```sh
 {
  "accountId": 101,
- "balance": 500.9
+ "balance": 500.1
+}
+```
+
+##### ResponseJson:
+````sh
+{
+    "isSuccessful": true,
+    "body": {
+        "accountId": 101,
+        "userName": "Sumit",
+        "balance": 2003.8
+    }
 }
 ```
 
@@ -64,6 +84,17 @@ http://localhost:9000/accounts/withdraw
  "balance": 400
 }
 ```
+##### ResponseJson:
+````sh
+{
+    "isSuccessful": true,
+    "body": {
+        "accountId": 102,
+        "userName": "Nayan",
+        "balance": 97.8
+    }
+}
+```
 
 - Transfer Amount POST request
 
@@ -75,6 +106,17 @@ http://localhost:9000/accounts/transferAmount
  "fromAccountId": 101,
  "toAccountId": 102,  
  "amount": 100.00
+}
+```
+##### ResponseJson:
+````sh
+{
+    "isSuccessful": true,
+    "body": {
+        "accountId": 102,
+        "userName": "Nayan",
+        "balance": 197.8
+    }
 }
 ```
 

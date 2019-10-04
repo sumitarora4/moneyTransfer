@@ -118,7 +118,7 @@ public class AccountController extends Controller {
 
 	
 	/*
-	 * API of transfering amount/balance from one account to another account
+	 * API of transferring amount/balance from one account to another account
 	 */	
 	public CompletionStage<Result> transferAmount(Http.Request request) {
 		

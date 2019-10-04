@@ -2,9 +2,11 @@ package controllers;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static play.mvc.Http.Status.NOT_FOUND;
 import static play.mvc.Http.Status.OK;
 import static play.test.Helpers.GET;
 import static play.test.Helpers.POST;
+import static play.test.Helpers.PUT;
 import static play.test.Helpers.route;
 
 import org.junit.BeforeClass;
@@ -14,8 +16,8 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import dao.H2DbConnection;
 import play.Application;
-import play.libs.Json;
 import play.inject.guice.GuiceApplicationBuilder;
+import play.libs.Json;
 import play.mvc.Http;
 import play.mvc.Result;
 import play.test.WithApplication;
@@ -90,5 +92,34 @@ public class AccountControllerTest extends WithApplication {
 		assertTrue(result.contentType().isPresent());
 		assertEquals("application/json", result.contentType().get());
 	}
+	
+	
+	@Test
+    public void testGetAccountByWrongAccountId() {
+        Http.RequestBuilder request = new Http.RequestBuilder()
+                .method(GET)
+                .uri("/accounts/100");
+
+        Result result = route(app, request);
+        assertEquals(NOT_FOUND, result.status());
+        assertTrue(result.contentType().isPresent());
+    }
+	
+	@Test
+    public void testTransferAmountWithWrongRequestMethod() {
+        final ObjectNode jsonNode = Json.newObject();
+        jsonNode.put("fromAccountId", 101);
+		jsonNode.put("toAccountId", 102);
+		jsonNode.put("amount", 100.67);
+
+        Http.RequestBuilder request = new Http.RequestBuilder()
+                .method(PUT)
+                .bodyJson(jsonNode)
+                .uri("/accounts/transferAmount");
+
+        Result result = route(app, request);
+        assertEquals(NOT_FOUND, result.status());
+        assertTrue(result.contentType().isPresent());
+    }
 
 }
