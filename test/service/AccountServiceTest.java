@@ -1,9 +1,10 @@
 package service;
 
-import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 
+import java.math.BigDecimal;
 import java.util.Optional;
 
 import org.junit.Before;
@@ -18,8 +19,6 @@ import dao.H2DbConnection;
 import model.Account;
 import model.Transaction;
 import play.libs.Json;
-import service.AccountService;
-import service.AccountServiceImpl;
 
 public class AccountServiceTest  {
 	
@@ -41,8 +40,7 @@ public class AccountServiceTest  {
 	}
     
     @Test
-    public void testTransferAmount() throws Exception {
-    	
+    public void testTransferAmount() throws Exception {    	
     	String jsonString = "{\n" + 
     			" \"fromAccountId\": 102,\n" + 
     			" \"toAccountId\": 103,  \n" + 
@@ -50,18 +48,35 @@ public class AccountServiceTest  {
     			"}";
     	 
         ObjectMapper mapper = new ObjectMapper();
-        JsonNode json = mapper.readTree(jsonString);
-        
-        System.out.println("json="+json);
-     
-    	Optional<Account> accountData = accountService.transferAmount(Json.fromJson(json, Transaction.class));
-    	
-    	System.out.println("acc="+accountData.map(row -> row));
+        JsonNode json = mapper.readTree(jsonString);     
+    	Optional<Account> accountData = accountService.transferAmount(Json.fromJson(json, Transaction.class));         	
     	assertTrue(accountData.isPresent());
-    	
-    	
-        
-         
+    }
+    
+    @Test
+    public void testWithdrawAmount() throws Exception {    	
+    	String jsonString = "{\n" + 
+    			" \"accountId\": \"102\",\n" + 
+    			" \"balance\": 100.00\n" + 
+    			"}";
+    	 
+        ObjectMapper mapper = new ObjectMapper();
+        JsonNode json = mapper.readTree(jsonString);     
+    	Optional<Account> accountData = accountService.withdraw(Json.fromJson(json, Account.class));         	
+    	assertEquals(accountData.map(row -> row.getBalance()), new BigDecimal(400.50));
+    }
+    
+    @Test
+    public void testDepositAmount() throws Exception {    	
+    	String jsonString = "{\n" + 
+    			" \"accountId\": \"102\",\n" + 
+    			" \"balance\": 500.00\n" + 
+    			"}";
+    	 
+        ObjectMapper mapper = new ObjectMapper();
+        JsonNode json = mapper.readTree(jsonString);     
+    	Optional<Account> accountData = accountService.deposit(Json.fromJson(json, Account.class));         	
+    	assertEquals(accountData.map(row -> row.getBalance()), new BigDecimal(1000.50));
     }
 
 

@@ -22,73 +22,73 @@ import play.test.WithApplication;
 
 public class AccountControllerTest extends WithApplication {
 
-    @Override
-    protected Application provideApplication() {
-        return new GuiceApplicationBuilder().build();
-    }
-    
-    @BeforeClass
-	public static void setup() {
-		 
-    	H2DbConnection.populateTestData();
+	@Override
+	protected Application provideApplication() {
+		return new GuiceApplicationBuilder().build();
 	}
 
-    @Test
-    public void testGetAccountById() {
-        
-        Http.RequestBuilder request = new Http.RequestBuilder()
-                .method(GET)
-                .uri("/accounts/102");
+	@BeforeClass
+	public static void setup() {
 
-        Result result = route(app, request);
-        assertEquals(OK, result.status());
-    }
-    
-  
-	  @Test public void testDeposit() {
-	  
-	  final ObjectNode jsonNode = Json.newObject(); jsonNode.put("accountId", 101);
-	  jsonNode.put("balance", 500.9);
-	  
-	  
-	  Http.RequestBuilder request = new Http.RequestBuilder() .method(POST)
-	  .bodyJson(jsonNode) .uri("/accounts/deposit");
-	  
-	  Result result = route(app, request); assertEquals(OK, result.status());
-	  assertTrue(result.contentType().isPresent());
-	  assertEquals("application/json", result.contentType().get()); }
-	  
-	  
-	  
-	  @Test public void testWithdraw() {
-	  
-	  final ObjectNode jsonNode = Json.newObject(); jsonNode.put("accountId", 102);
-	  jsonNode.put("balance", 400.67);
-	  
-	  
-	  Http.RequestBuilder request = new Http.RequestBuilder() .method(POST)
-	  .bodyJson(jsonNode) .uri("/accounts/withdraw");
-	  
-	  Result result = route(app, request); assertEquals(OK, result.status());
-	  assertTrue(result.contentType().isPresent());
-	  assertEquals("application/json", result.contentType().get()); }
-	  
-	  
-	  @Test public void testTransferAmount() {
-	  
-	  final ObjectNode jsonNode = Json.newObject(); jsonNode.put("fromAccountId",
-	  101); jsonNode.put("toAccountId", 102); jsonNode.put("amount", 400.67);
-	  
-	  
-	  Http.RequestBuilder request = new Http.RequestBuilder() .method(POST)
-	  .bodyJson(jsonNode) .uri("/accounts/transferAmount");
-	  
-	  Result result = route(app, request); assertEquals(OK, result.status());
-	  assertTrue(result.contentType().isPresent());
-	  assertEquals("application/json", result.contentType().get()); }
-	 
-    
+		H2DbConnection.populateTestData();
+	}
+
+	@Test
+	public void testGetAccountById() {
+
+		Http.RequestBuilder request = new Http.RequestBuilder().method(GET).uri("/accounts/102");
+
+		Result result = route(app, request);
+		assertEquals(OK, result.status());
+	}
+
+	@Test
+	public void testDeposit() {
+
+		final ObjectNode jsonNode = Json.newObject();
+		jsonNode.put("accountId", 101);
+		jsonNode.put("balance", 500.9);
+
+		Http.RequestBuilder request = new Http.RequestBuilder().method(POST).bodyJson(jsonNode)
+				.uri("/accounts/deposit");
+
+		Result result = route(app, request);
+		assertEquals(OK, result.status());
+		assertTrue(result.contentType().isPresent());
+		assertEquals("application/json", result.contentType().get());
+	}
+
+	@Test
+	public void testWithdraw() {
+
+		final ObjectNode jsonNode = Json.newObject();
+		jsonNode.put("accountId", 102);
+		jsonNode.put("balance", 50.67);
+
+		Http.RequestBuilder request = new Http.RequestBuilder().method(POST).bodyJson(jsonNode)
+				.uri("/accounts/withdraw");
+
+		Result result = route(app, request);
+		assertEquals(OK, result.status());
+		assertTrue(result.contentType().isPresent());
+		assertEquals("application/json", result.contentType().get());
+	}
+
+	@Test
+	public void testTransferAmount() {
+
+		final ObjectNode jsonNode = Json.newObject();
+		jsonNode.put("fromAccountId", 101);
+		jsonNode.put("toAccountId", 102);
+		jsonNode.put("amount", 100.67);
+
+		Http.RequestBuilder request = new Http.RequestBuilder().method(POST).bodyJson(jsonNode)
+				.uri("/accounts/transferAmount");
+
+		Result result = route(app, request);
+		assertEquals(OK, result.status());
+		assertTrue(result.contentType().isPresent());
+		assertEquals("application/json", result.contentType().get());
+	}
+
 }
-
-
-

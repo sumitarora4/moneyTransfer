@@ -11,26 +11,19 @@ import org.apache.log4j.Logger;
 
 import model.Account;
 
+public class AccountDaoImpl implements AccountDao {
 
-public class AccountDaoImpl implements AccountDao{
-	
 	private static Logger log = Logger.getLogger(AccountDaoImpl.class);
-	private final static String q1 = "SELECT * FROM Account WHERE account_id = ? ";	
-	private final static String q2 = "SELECT * FROM Account WHERE account_id = ? FOR UPDATE";
-	private final static String q3 = "UPDATE Account SET Balance = ? WHERE account_id = ? ";
-	
-	
- 
 
 	@Override
 	public Account findById(long accountId) {
+		log.debug("inside Dao findById method");
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		ResultSet rs = null;
 		Account acc = null;
 		try {
 			conn = H2DbConnection.getConnection();
-//			H2DbConnection.populateTestData();
 			stmt = conn.prepareStatement(q1);
 			stmt.setLong(1, accountId);
 			rs = stmt.executeQuery();
@@ -51,23 +44,27 @@ public class AccountDaoImpl implements AccountDao{
 
 	@Override
 	public int updateBalance(long accountId, BigDecimal amount) throws Exception {
+
+		log.debug("inside Dao updateBalance method");
 		Connection conn = null;
 		PreparedStatement lockStmt = null;
 		PreparedStatement updateStmt = null;
 		ResultSet rs = null;
 		Account targetAccount = null;
 		int updateCount = -1;
-		
+
 		try {
 			conn = H2DbConnection.getConnection();
+			log.debug("connection Detatils=" + conn);
 			conn.setAutoCommit(false);
-			
-			// lock account for writing:
+
+			/* lock account for writing: */
 			lockStmt = conn.prepareStatement(q2);
 			lockStmt.setLong(1, accountId);
 			rs = lockStmt.executeQuery();
 			if (rs.next()) {
-				targetAccount = new Account(rs.getLong("account_id"), rs.getString("user_name"), rs.getBigDecimal("balance"));
+				targetAccount = new Account(rs.getLong("account_id"), rs.getString("user_name"),
+						rs.getBigDecimal("balance"));
 				if (log.isDebugEnabled())
 					log.debug("update Account Balance from Account: " + targetAccount);
 			}
@@ -75,10 +72,10 @@ public class AccountDaoImpl implements AccountDao{
 			if (targetAccount == null) {
 				throw new Exception("update Account Balance(): fail to lock account : " + accountId);
 			}
-			
-			// update account upon success locking
+
+			/* update account upon success locking */
 			BigDecimal balance = targetAccount.getBalance().add(amount);
-			
+
 			if (balance.compareTo(new BigDecimal(0)) < 0) {
 				throw new Exception("Not sufficient Fund for account: " + accountId);
 			}
@@ -92,8 +89,8 @@ public class AccountDaoImpl implements AccountDao{
 				log.debug("New Balance after Update: " + targetAccount);
 			return updateCount;
 		} catch (SQLException se) {
-			
-			// rollback transaction if exception occurs
+
+			/* rollback transaction if exception occurs */
 			log.error("updateAccountBalance(): User Transaction Failed, rollback initiated for: " + accountId, se);
 			try {
 				if (conn != null)
@@ -112,6 +109,8 @@ public class AccountDaoImpl implements AccountDao{
 
 	@Override
 	public int transferAmount(long fromAccountId, long toAccountId, BigDecimal transferAmount) throws Exception {
+
+		log.debug("inside Dao transferAmount method");
 		int result = -1;
 		Connection conn = null;
 		PreparedStatement lockStmt = null;
@@ -122,14 +121,16 @@ public class AccountDaoImpl implements AccountDao{
 
 		try {
 			conn = H2DbConnection.getConnection();
+			System.out.println("con=" + conn);
 			conn.setAutoCommit(false);
-			
-			// lock the credit and debit account for writing:
+
+			/* lock the credit and debit account for writing: */
 			lockStmt = conn.prepareStatement(q2);
 			lockStmt.setLong(1, fromAccountId);
 			rs = lockStmt.executeQuery();
 			if (rs.next()) {
-				fromAccount = new Account(rs.getLong("account_id"), rs.getString("user_name"), rs.getBigDecimal("balance"));
+				fromAccount = new Account(rs.getLong("account_id"), rs.getString("user_name"),
+						rs.getBigDecimal("balance"));
 				if (log.isDebugEnabled())
 					log.debug("transferAccountBalance from Account: " + fromAccount);
 			}
@@ -137,42 +138,43 @@ public class AccountDaoImpl implements AccountDao{
 			lockStmt.setLong(1, toAccountId);
 			rs = lockStmt.executeQuery();
 			if (rs.next()) {
-				toAccount = new Account(rs.getLong("account_id"), rs.getString("user_name"), rs.getBigDecimal("balance"));
+				toAccount = new Account(rs.getLong("account_id"), rs.getString("user_name"),
+						rs.getBigDecimal("balance"));
 				if (log.isDebugEnabled())
 					log.debug("transferAccountBalance to Account: " + toAccount);
 			}
 
-			// check locking status
+			/* check locking status */
 			if (fromAccount == null || toAccount == null) {
 				throw new Exception("Fail to lock both accounts for write");
 			}
-			 	 
 
-			// check enough fund in source account
+			/* check enough fund in source account */
 			BigDecimal fromAccountLeftOver = fromAccount.getBalance().subtract(transferAmount);
 			if (fromAccountLeftOver.compareTo(new BigDecimal(0)) < 0) {
 				throw new Exception("Not enough Fund from source Account ");
 			}
-			
-			 
+
 			updateStmt = conn.prepareStatement(q3);
 			updateStmt.setBigDecimal(1, fromAccountLeftOver);
 			updateStmt.setLong(2, fromAccountId);
 			updateStmt.addBatch();
 			updateStmt.setBigDecimal(1, toAccount.getBalance().add(transferAmount));
-			updateStmt.setLong(2,toAccountId);
+			updateStmt.setLong(2, toAccountId);
 			updateStmt.addBatch();
 			int[] rowsUpdated = updateStmt.executeBatch();
 			result = rowsUpdated[0] + rowsUpdated[1];
-			
+
 			if (log.isDebugEnabled()) {
 				log.debug("Number of rows updated for the transfer : " + result);
 			}
-			 
+
 			conn.commit();
 		} catch (SQLException se) {
-			// rollback transaction if exception occurs
-			log.error("transferAccountBalance(): User Transaction Failed, rollback initiated for From Account Id: " + fromAccountId, se);
+
+			/* rollback transaction if exception occurs */
+			log.error("transferAccountBalance(): Transaction Failed, rollback initiated for From Account Id: "
+					+ fromAccountId, se);
 			try {
 				if (conn != null)
 					conn.rollback();
@@ -188,6 +190,8 @@ public class AccountDaoImpl implements AccountDao{
 		return result;
 	}
 
-	
-	
+	private final static String q1 = "SELECT * FROM Account WHERE account_id = ? ";
+	private final static String q2 = "SELECT * FROM Account WHERE account_id = ? FOR UPDATE";
+	private final static String q3 = "UPDATE Account SET Balance = ? WHERE account_id = ? ";
+
 }

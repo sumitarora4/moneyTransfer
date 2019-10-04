@@ -20,15 +20,16 @@ Now once sbt command prompt appears. Execute below command to run h2 db on the b
 ```sh
 h2-browser
 ```
-On h2 browser make connection from details given in conf/db.properties file. And hit SQL scripts given at scripts/V1_db_script.sql to generate table and data.
-
-Once table is created and data is restored, execute below command to run PLAY application server:
+Execute below command to run PLAY application server. This will start Application on internal PLAY framework's Netty server at localhost default port 9000.
 
 ```sh
 run
 ```
 
-Application starts an internal PLAY framework's Netty server on localhost default port 9000.
+On h2 browser make connection from details given in conf/db.properties file. Here you will get "Account" table in h2 database which is automatically generated on Application startup.
+
+You can find SQL scripts given at scripts/V1_db_script.sql to get more details.
+
 
 ### REST API Services & JSON
 
