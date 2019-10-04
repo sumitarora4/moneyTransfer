@@ -40,7 +40,7 @@ Hit below APIs on POSTMAN REST Client given at chrome browser:
 http://localhost:9000/accounts/101
 
 ##### ResponseJson:
-````sh
+```sh
 {
     "accountId": 101,
     "userName": "Sumit",
@@ -62,7 +62,7 @@ Content-Type: application/json
 ```
 
 ##### ResponseJson:
-````sh
+```sh
 {
     "isSuccessful": true,
     "body": {
@@ -85,7 +85,7 @@ http://localhost:9000/accounts/withdraw
 }
 ```
 ##### ResponseJson:
-````sh
+```sh
 {
     "isSuccessful": true,
     "body": {
@@ -109,7 +109,7 @@ http://localhost:9000/accounts/transferAmount
 }
 ```
 ##### ResponseJson:
-````sh
+```sh
 {
     "isSuccessful": true,
     "body": {
